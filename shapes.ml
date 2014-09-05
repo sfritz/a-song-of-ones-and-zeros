@@ -51,14 +51,18 @@ let next grid =
     )
   )
 
+let to_string grid =
+  String.concat ~sep:"\n"
+    (List.map grid ~f:(fun row ->
+      String.concat ~sep:""
+        (List.map row ~f:(fun is_alive ->
+          if is_alive then "X" else " "
+        ))
+    ))
+
 let print grid =
-  List.iteri grid ~f:(fun y row ->
-    List.iteri row ~f:(fun x is_alive ->
-      let c = if is_alive then 'X' else ' ' in
-      Printf.printf "%c" c
-    );
-    Printf.printf "\n"
-  )
+  printf "%s" (to_string grid);
+  printf "\n%s\n" (String.make (List.length grid) '-')
 
 let thunk grid =
   let state = ref grid in
