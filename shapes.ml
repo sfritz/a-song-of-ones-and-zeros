@@ -1,13 +1,17 @@
 open Core.Std
 
-let grid size (initial: (int * int) list) =
+type t = bool list list
+
+type state = (int * int) list
+
+let grid size (initial: state) : t =
   List.init size ~f:(fun x ->
     List.init size ~f:(fun y ->
       List.mem initial (x, y)
     )
   )
 
-let get grid x y =
+let get grid x y : bool option =
   match List.nth grid y with
   | None -> None
   | Some row -> List.nth row x
@@ -34,10 +38,10 @@ let neighbors grid x y : bool list =
       | Some is_alive -> is_alive
     )
 
-let live_neighbors grid x y =
+let live_neighbors grid x y : int =
   List.count (neighbors grid x y) ~f:(fun x -> x)
 
-let next grid =
+let next grid : t =
   List.mapi grid ~f:(fun y row ->
     List.mapi row ~f:(fun x is_alive ->
       let neighbors = live_neighbors grid x y in
@@ -51,7 +55,7 @@ let next grid =
     )
   )
 
-let to_string grid =
+let to_string grid : string =
   String.concat ~sep:"\n"
     (List.map grid ~f:(fun row ->
       String.concat ~sep:""
