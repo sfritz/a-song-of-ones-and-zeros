@@ -83,8 +83,16 @@ let beacon = [
   4,4
 ]
 
+let r_pentomino = [
+  1,2;
+  2,1;
+  2,2;
+  2,3;
+  3,1
+]
+
 let main () =
-  let world = thunk (grid 5 beacon) in
+  let world = thunk (grid 50 r_pentomino) in
     while true do
       print (world ())
    done
