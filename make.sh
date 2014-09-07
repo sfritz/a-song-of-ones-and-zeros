@@ -1,1 +1,1 @@
-corebuild shapes.byte
+corebuild -pkg core_bench test.native
