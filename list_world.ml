@@ -5,8 +5,8 @@ type t = bool list list
 type state = (int * int) list
 
 let grid size (initial: state) : t =
-  List.init size ~f:(fun x ->
-    List.init size ~f:(fun y ->
+  List.init size ~f:(fun y ->
+    List.init size ~f:(fun x ->
       List.mem initial (x, y)
     )
   )
@@ -16,8 +16,8 @@ let get grid x y : bool option =
   | None -> None
   | Some row -> List.nth row x
 
-let neighbors grid x y : bool list =
-  List.map
+let live_neighbors grid x y : int =
+  List.count
     (List.filter [
         get grid (x-1) (y-1);
         get grid (x)   (y-1);
@@ -37,9 +37,6 @@ let neighbors grid x y : bool list =
       | None -> assert false
       | Some is_alive -> is_alive
     )
-
-let live_neighbors grid x y : int =
-  List.count (neighbors grid x y) ~f:(fun x -> x)
 
 let next grid : t =
   List.mapi grid ~f:(fun y row ->
@@ -64,42 +61,30 @@ let to_string grid : string =
         ))
     ))
 
-let print grid =
+let print grid : unit =
   printf "%s" (to_string grid);
   printf "\n%s\n" (String.make (List.length grid) '-')
 
-let thunk grid =
-  let state = ref grid in
-  print !state;
+let thunker x ~f =
+  let state = ref x in
   fun () ->
-    let next_state = next !state in
-    state := next_state;
+    let next = f !state in
+    state := next;
     !state
 
-let beacon = [
-  1,1;
-  1,2;
-  2,1;
-  2,2;
-  3,3;
-  3,4;
-  4,3;
-  4,4
-]
+let make grid = thunker grid ~f:next
 
-let r_pentomino = [
-  1,2;
-  2,1;
-  2,2;
-  2,3;
-  3,1
-]
+let eat _ = ()
+
+let iterations x =
+  let world = make (grid 5 Patterns.blinker) in
+  for i = 0 to x do
+    eat (world ())
+  done
 
 let main () =
-  let world = thunk (grid 50 r_pentomino) in
+  let world = make (grid 5 Patterns.blinker) in
     while true do
       print (world ())
    done
-
-let () = main ()
 
