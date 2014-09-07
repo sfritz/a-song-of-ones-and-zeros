@@ -77,16 +77,12 @@ let next grid : unit =
 
 let to_string grid : string =
   String.concat ~sep:"\n"
-    (Array.to_list
-      (Array.map grid ~f:(fun row ->
-        String.concat ~sep:""
-          (Array.to_list
-            (Array.map row ~f:(fun (_, is_alive) ->
-              if is_alive then "X" else " "
-            ))
-          )
-      ))
-    )
+    (List.map (Array.to_list grid) ~f:(fun row ->
+      String.concat ~sep:""
+        (List.map (Array.to_list row) ~f:(fun (_, is_alive) ->
+            if is_alive then "X" else " "
+        ))
+    ))
 
 let print grid : unit =
   printf "%s" (to_string grid);
