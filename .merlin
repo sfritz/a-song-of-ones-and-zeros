@@ -1,1 +1,3 @@
-PKG core
+PKG core core_bench
+S .
+B _build
