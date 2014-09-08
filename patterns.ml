@@ -17,13 +17,13 @@ let blinker = [
   2,3
 ]
 
-let taod = [
+let toad = [
   2,2;
   3,2;
   4,2;
   1,3;
   2,3;
-  4,3
+  3,3
 ]
 
 (* spaceships *)
