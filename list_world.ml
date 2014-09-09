@@ -17,7 +17,7 @@ let get (grid: 'a list list) x y : 'a option =
   | None -> Printf.printf "%d, %d" x y; assert false
   | Some row -> List.nth row (mod' x length)
 
-let get_neighbors (grid: 'a list list) (x: int) (y: int) =
+let get_neighbors (grid: 'a list list) (x: int) (y: int) : 'a list =
   [
     get grid (x-1) (y-1);
     get grid (x)   (y-1);
@@ -28,11 +28,7 @@ let get_neighbors (grid: 'a list list) (x: int) (y: int) =
     get grid (x)   (y+1);
     get grid (x+1) (y+1)
   ]
-  |> List.filter  ~f:(fun cell ->
-        match cell with
-        | None -> false
-        | Some _ -> true
-     )
+  |> List.filter_map ~f:(fun (x: 'a option) -> x)
 
 let mapi grid ~f:(f: int -> int -> 'a) =
   List.mapi grid ~f:(fun y row ->
@@ -42,8 +38,7 @@ let mapi grid ~f:(f: int -> int -> 'a) =
   )
 
 let flat_filter_mapi (grid: 'a list list) ~f:(f: int -> int -> 'a -> 'b option): ('b list)  =
-  (* List.join here? *)
-  List.concat
+  List.join
     (List.mapi grid ~f:(fun y row ->
       List.filter_mapi row ~f:(fun x is_alive ->
         match is_alive with
@@ -58,7 +53,7 @@ let to_string (grid: 'a list list) ~f:(f: 'a -> string) : string =
       String.concat ~sep:"" (List.map row ~f:f)
     ))
 
-let thunker x ~f =
+let thunker (x: 'a) ~f:(f: 'a -> 'a) =
   let state = ref x in
   fun () ->
     let next = f !state in
@@ -76,11 +71,7 @@ let grid (size: int) (initial: state) : t =
 
 let live_neighbors (grid: t) (x: int) (y: int) : int =
   get_neighbors grid x y
-  |> List.count ~f:(fun cell ->
-       match cell with
-       | None -> assert false
-       | Some is_alive -> is_alive
-     )
+  |> List.count ~f:(fun x -> x)
 
 let next (grid: t) : t =
   mapi grid ~f:(fun x y is_alive ->
