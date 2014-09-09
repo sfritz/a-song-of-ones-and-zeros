@@ -26,7 +26,7 @@ let assert_same_state expected actual : unit =
 let check_next_state expected world =
   assert_same_state expected (List_world.to_state (world ()))
 
-let make pattern = List_world.make (List_world.grid 5 pattern)
+let make pattern = List_world.make (List_world.grid 8 pattern)
 
 (* period 2 oscillators *)
 

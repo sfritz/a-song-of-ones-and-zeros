@@ -11,10 +11,15 @@ let grid size (initial: state) : t =
     )
   )
 
+let mod' x y =
+  (x mod y + y) mod y
+
 let get grid x y : bool option =
-  match List.nth grid y with
-  | None -> None
-  | Some row -> List.nth row x
+  (* assumes square grid *)
+  let length = List.length grid in
+  match List.nth grid (mod' y length) with
+  | None -> Printf.printf "%d, %d" x y; assert false
+  | Some row -> List.nth row (mod' x length)
 
 let live_neighbors grid x y : int =
   List.count
@@ -104,7 +109,7 @@ let iterations x =
   done
 
 let main () =
-  let world = make (grid 5 Patterns.toad) in
+  let world = make (grid 50 Patterns.glider) in
     while true do
       print (world ())
    done
