@@ -2,8 +2,8 @@ Estimated testing time 20s (2 benchmarks x 10s). Change using -quota SECS.
 ┌───────────┬──────────┬─────────┬──────────┬──────────┬────────────┐
 │ Name      │ Time/Run │ mWd/Run │ mjWd/Run │ Prom/Run │ Percentage │
 ├───────────┼──────────┼─────────┼──────────┼──────────┼────────────┤
-│ list guy  │ 164.80ms │ 32.25Mw │  23.07kw │  23.07kw │    100.00% │
-│ array guy │  58.91ms │ 23.25Mw │   9.83kw │   9.83kw │     35.75% │
+│ list guy  │ 165.93ms │ 32.25Mw │  23.13kw │  23.13kw │    100.00% │
+│ array guy │  48.76ms │ 23.25Mw │   9.83kw │   9.83kw │     29.39% │
 └───────────┴──────────┴─────────┴──────────┴──────────┴────────────┘
 Benchmarks that take 1ns to 100ms can be estimated precisely. For more reliable 
 estimates, redesign your benchmark to have a shorter execution time.
