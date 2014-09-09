@@ -22,22 +22,22 @@ let get grid x y : bool option =
   | Some row -> List.nth row (mod' x length)
 
 let live_neighbors grid x y : int =
-  List.count
-    (List.filter [
-        get grid (x-1) (y-1);
-        get grid (x)   (y-1);
-        get grid (x+1) (y-1);
-        get grid (x-1) (y);
-        get grid (x+1) (y);
-        get grid (x-1) (y+1);
-        get grid (x)   (y+1);
-        get grid (x+1) (y+1)
-      ] ~f:(fun cell ->
+  [
+    get grid (x-1) (y-1);
+    get grid (x)   (y-1);
+    get grid (x+1) (y-1);
+    get grid (x-1) (y);
+    get grid (x+1) (y);
+    get grid (x-1) (y+1);
+    get grid (x)   (y+1);
+    get grid (x+1) (y+1)
+  ]
+  |> List.filter  ~f:(fun cell ->
         match cell with
         | None -> false
         | Some _ -> true
-      )
-    ) ~f:(fun cell ->
+     )
+ |> List.count ~f:(fun cell ->
       match cell with
       | None -> assert false
       | Some is_alive -> is_alive
