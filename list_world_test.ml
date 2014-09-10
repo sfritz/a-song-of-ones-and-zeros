@@ -20,8 +20,8 @@ module Make_test_suite(W : World) = struct
     in
     let comparison =
       (Set.equal
-        (Set.of_list Comparator.Poly.comparator expected)
-        (Set.of_list Comparator.Poly.comparator actual)
+        (Set.of_list ~comparator:Comparator.Poly.comparator expected)
+        (Set.of_list ~comparator:Comparator.Poly.comparator actual)
       )
     in
     assert_bool message comparison
