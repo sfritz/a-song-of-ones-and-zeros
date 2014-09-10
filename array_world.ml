@@ -1,9 +1,15 @@
 open Core.Std
 
-type t = (bool * bool) array array
+include World
+
+include World_helpers
+
+type cell = (bool * bool)
+type t = cell array array
 
 type state = (int * int) list
 
+let name = "Array_world"
 
 let grid size (initial: state) : t =
   Array.init size ~f:(fun y ->
@@ -84,9 +90,25 @@ let to_string grid : string =
         ))
     ))
 
+let to_list_world (grid: t) : cell list list =
+  Array.to_list (Array.map grid ~f:(fun row -> Array.to_list row))
+
+let to_state (grid: t) : state =
+  List.join
+    (List.mapi (to_list_world grid) ~f:(fun y row ->
+      List.filter_mapi row ~f:(fun x (_, is_alive) ->
+       match is_alive with
+       | false -> None
+       | true -> Some (x, y)
+      )
+    ))
+
 let print grid : unit =
   printf "%s" (to_string grid);
   printf "\n%s\n" (String.make (Array.length grid) '-')
+
+let make (grid: t) : unit -> t =
+  fun () -> next grid; grid
 
 let iterations x =
   let world = grid 5 Patterns.blinker in
