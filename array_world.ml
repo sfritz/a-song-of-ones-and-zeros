@@ -33,12 +33,12 @@ let get grid x y : (bool * bool) option =
 let get_old grid x y =
   match get grid x y with
   | None -> None
-  | Some (old, nu) -> Some old
+  | Some (old, _) -> Some old
 
 let get_new grid x y =
   match get grid x y with
   | None -> None
-  | Some (old, nu) -> Some nu
+  | Some (_, nu) -> Some nu
 
 let live_neighbors grid x y : int =
   List.count
