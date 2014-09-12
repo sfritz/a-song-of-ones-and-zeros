@@ -7,15 +7,14 @@ let init size ~f:(f : int -> int -> 'a ) : 'b =
     List.init size ~f:(fun x -> f x y)
   )
 
-let mod' x y =
+let (%) x y =
   (x mod y + y) mod y
 
-let get (grid: 'a list list) x y : 'a option =
+let get (grid: 'a list list) x y : 'a =
   (* assumes square grid *)
   let length = List.length grid in
-  match List.nth grid (mod' y length) with
-  | None -> Printf.printf "%d, %d" x y; assert false
-  | Some row -> List.nth row (mod' x length)
+  let row = List.nth_exn grid (y % length) in
+  List.nth_exn row (x % length)
 
 let get_neighbors (grid: 'a list list) (x: int) (y: int) : 'a list =
   [
@@ -28,7 +27,6 @@ let get_neighbors (grid: 'a list list) (x: int) (y: int) : 'a list =
     get grid (x)   (y+1);
     get grid (x+1) (y+1)
   ]
-  |> List.filter_map ~f:(fun (x: 'a option) -> x)
 
 let mapi grid ~f:(f: int -> int -> 'a) =
   List.mapi grid ~f:(fun y row ->

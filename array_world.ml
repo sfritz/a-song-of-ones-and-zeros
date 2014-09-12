@@ -1,15 +1,14 @@
 open Core.Std
 
 include World
-
 include World_helpers
+
+let name = "Array_world"
 
 type cell = (bool * bool)
 type t = cell array array
-
 type state = (int * int) list
 
-let name = "Array_world"
 
 let grid size (initial: state) : t =
   Array.init size ~f:(fun y ->
@@ -22,50 +21,39 @@ let grid size (initial: state) : t =
 let in_bounds arr x =
   x >= 0 && x < Array.length arr
 
-let get grid x y : (bool * bool) option =
-  if in_bounds grid y then
-    let row = grid.(y) in
-    if in_bounds row x then
-      Some row.(x)
-    else None
-  else None
+let get grid x y : (bool * bool) =
+  let y' = y % (Array.length grid) in
+  let row = grid.(y') in
+  let x' = x % (Array.length row) in
+  row.(x')
 
 let get_old grid x y =
-  match get grid x y with
-  | None -> None
-  | Some (old, _) -> Some old
+  let (old, _) = get grid x y in
+  old
 
 let get_new grid x y =
-  match get grid x y with
-  | None -> None
-  | Some (_, nu) -> Some nu
+  let (_, nu) = get grid x y in
+  nu
 
-let live_neighbors grid x y : int =
-  List.count
-    (List.filter [
-      get_old grid (x-1) (y-1);
-      get_old grid (x)   (y-1);
-      get_old grid (x+1) (y-1);
-      get_old grid (x-1) (y);
-      get_new grid (x+1) (y);
-      get_new grid (x-1) (y+1);
-      get_new grid (x)   (y+1);
-      get_new grid (x+1) (y+1)
-    ] ~f:(fun cell ->
-        match cell with
-        | None -> false
-        | Some _ -> true
-      )
-    ) ~f:(fun cell ->
-      match cell with
-      | None -> assert false
-      | Some is_alive -> is_alive
-    )
+let get_neighbors (grid: t) (x: int) (y: int) : bool list =
+  [
+    get_old grid (x-1) (y-1);
+    get_old grid (x)   (y-1);
+    get_old grid (x+1) (y-1);
+    get_old grid (x-1) (y);
+    get_new grid (x+1) (y);
+    get_new grid (x-1) (y+1);
+    get_new grid (x)   (y+1);
+    get_new grid (x+1) (y+1)
+  ]
 
-let set grid x y value : unit =
-  match get grid x y with
-  | None -> assert false
-  | Some (_, current) -> grid.(y).(x) <- (current, value)
+let live_neighbors (grid: t) (x: int) (y: int) : int =
+  get_neighbors grid x y
+  |> List.count ~f:ident
+
+let set (grid: t) (x: int) (y: int) (is_alive: bool) : unit =
+  let (_, current) = get grid x y in
+  grid.(y).(x) <- (current, is_alive)
 
 let next grid : unit =
   Array.iteri grid ~f:(fun y row ->
@@ -81,7 +69,7 @@ let next grid : unit =
     )
   )
 
-let to_string grid : string =
+let to_string (grid: t) : string =
   String.concat ~sep:"\n"
     (List.map (Array.to_list grid) ~f:(fun row ->
       String.concat ~sep:""
@@ -103,7 +91,7 @@ let to_state (grid: t) : state =
       )
     ))
 
-let print grid : unit =
+let print (grid: t) : unit =
   printf "%s" (to_string grid);
   printf "\n%s\n" (String.make (Array.length grid) '-')
 

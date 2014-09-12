@@ -17,7 +17,7 @@ let grid (size: int) (initial: state) : t =
 
 let live_neighbors (grid: t) (x: int) (y: int) : int =
   get_neighbors grid x y
-  |> List.count ~f:(fun x -> x)
+  |> List.count ~f:ident
 
 let next (grid: t) : t =
   mapi grid ~f:(fun x y is_alive ->
