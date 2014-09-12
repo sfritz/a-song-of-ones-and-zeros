@@ -18,9 +18,6 @@ let grid size (initial: state) : t =
     )
   )
 
-let in_bounds arr x =
-  x >= 0 && x < Array.length arr
-
 let get grid x y : (bool * bool) =
   let y' = y % (Array.length grid) in
   let row = grid.(y') in
@@ -69,27 +66,21 @@ let next grid : unit =
     )
   )
 
-let to_string (grid: t) : string =
-  String.concat ~sep:"\n"
-    (List.map (Array.to_list grid) ~f:(fun row ->
-      String.concat ~sep:""
-        (List.map (Array.to_list row) ~f:(fun (_, is_alive) ->
-            if is_alive then "X" else " "
-        ))
-    ))
-
 let to_list_world (grid: t) : cell list list =
-  Array.to_list (Array.map grid ~f:(fun row -> Array.to_list row))
+  Array.map grid ~f:(fun row -> Array.to_list row)
+  |> Array.to_list
+
+let to_string (grid: t) : string =
+  to_list_world grid
+  |> to_string ~f:(fun (_, is_alive) ->
+       if is_alive then "X" else " "
+     )
 
 let to_state (grid: t) : state =
-  List.join
-    (List.mapi (to_list_world grid) ~f:(fun y row ->
-      List.filter_mapi row ~f:(fun x (_, is_alive) ->
-       match is_alive with
-       | false -> None
-       | true -> Some (x, y)
-      )
-    ))
+  to_list_world grid
+  |> flat_filter_mapi ~f:(fun x y (_, is_alive) ->
+       if is_alive then Some (x, y) else None
+     )
 
 let print (grid: t) : unit =
   printf "%s" (to_string grid);

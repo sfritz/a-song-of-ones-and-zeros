@@ -33,9 +33,7 @@ let next (grid: t) : t =
 
 let to_state (grid: t) : state =
  flat_filter_mapi grid ~f:(fun x y is_alive ->
-   match is_alive with
-   | false -> None
-   | true -> Some (x, y)
+   if is_alive then Some (x, y) else None
  )
 
 let to_string (grid: t) : string =
