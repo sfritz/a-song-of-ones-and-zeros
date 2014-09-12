@@ -10,7 +10,7 @@ module type World = sig
 
   val to_state : t -> state
 
-  val grid : int -> (int * int) list -> t
+  val grid : int -> state -> t
 
   val make : t -> unit -> t
 end
